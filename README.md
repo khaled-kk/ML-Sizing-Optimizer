@@ -1,37 +1,51 @@
-# 👕 ML Sizing Optimizer: K-Means Apparel Classification
+# ML Sizing Optimizer: K-Means Clustering of Body Measurements
 
-[![ML: Scikit-Learn](https://img.shields.io/badge/ML-Scikit--Learn-orange.svg)]()
-[![Domain: Manufacturing](https://img.shields.io/badge/Domain-Smart--Manufacturing-blue.svg)]()
-[![Status: Complete](https://img.shields.io/badge/Status-Complete-success.svg)]()
+A notebook that implements K-Means clustering from scratch (pandas/NumPy) to group people by five body measurements, measures how running time grows with sample size, and visualises the clusters after a from-scratch PCA projection to 2D.
 
-**ML Sizing Optimizer** is a machine learning project that automates the categorization of apparel sizes using K-Means Clustering. By analyzing high-dimensional physical measurements, the system identifies optimal clusters to streamline manufacturing and inventory management.
+## What it does
 
-## 🎯 Project Objective
-Traditional sizing often fails to capture the complexity of human proportions. This project uses unsupervised learning to group complex measurement sets—including sleeve length, neck size, and shoulder width—into $K$ logical categories, ensuring better fit and reduced manufacturing waste.
+- Loads `group3.csv` with five numeric columns: **height, weight, body mass, shoulders, length of arms**.
+- Normalises each column with z-score standardisation (`(x - mean) / std`).
+- **K-Means implemented by hand**: random initial centroids sampled from the data, Euclidean distance to each centroid, assignment to the nearest centroid, centroid recomputation, repeated until the centroids stop changing. The number of clusters is fixed at **K = 5** (K = 3 is left commented out); no Elbow or Silhouette method is used.
+- **Running-time experiment**: runs the clustering on random samples of 1,000, 2,000, 3,000 and 4,000 rows, records the time for each and plots it.
+- **PCA implemented by hand** (covariance matrix, `np.linalg.eigh`, top eigenvectors) to reduce the five features to two components, then clusters a random 1,000-row sample in 2D, prints the share of points in each cluster and draws a scatter plot with the centroids.
 
-## 📊 Features & Data Dimensions
-The model processes five critical dimensions to determine the ideal cluster:
-1. **Height & Width:** Core body proportions.
-2. **Sleeve Length:** Arm-to-torso ratio.
-3. **Neck Size:** Critical for comfort and fastening.
-4. **Shoulder Length:** The primary anchor point for apparel fit.
+## Results (from the saved notebook outputs)
 
-## 🛠 Technical Implementation
-* **Algorithm:** K-Means Clustering for unsupervised grouping.
-* **Optimization:** [Mention if you used the Elbow Method or Silhouette Score] to determine the optimal number of clusters ($K$).
-* **Preprocessing:** Feature scaling (StandardScaler) to ensure all measurement units contribute equally to the distance metrics.
+These come from a single run with random sampling and random initial centroids, so re-running will give different numbers.
 
+Running time of the 5-feature clustering:
 
+| Sample size | Time (s) |
+| ---: | ---: |
+| 1,000 | 24.47 |
+| 2,000 | 30.23 |
+| 3,000 | 64.53 |
+| 4,000 | 61.97 |
 
-## 📈 Impact on Manufacturing
-* **Automated Sizing:** Replaces manual estimation with data-driven categories (e.g., Small, Medium, Large).
-* **Inventory Efficiency:** Identifies which size clusters have the highest density, helping brands focus production on the most common body types.
-* **Reduced Waste:** Optimizes fabric cutting patterns based on statistically accurate size profiles.
+Cluster sizes on the PCA-reduced 1,000-row sample (K = 5): 15.3%, 25.0%, 15.0%, 23.2%, 21.5%.
 
-## 🚀 Getting Started
-1. **Clone:** `git clone https://github.com/khaled-kk/ML-Sizing-Optimizer.git`
-2. **Install Dependencies:** `pip install -r requirements.txt`
-3. **Run Analysis:** `python clustering_main.py`
+## Tech stack
+
+- Python 3, Jupyter Notebook / Google Colab
+- pandas, NumPy, Matplotlib
+- (`sklearn.cluster.KMeans` is imported but not used; clustering and PCA are written manually.)
+
+## Repository contents
+
+```
+analysis.ipynb   Data loading, normalisation, K-Means, timing experiment, PCA and plots
+README.md
+```
+
+The dataset `group3.csv` is **not** included in this repository.
+
+## How to run
+
+1. Open `analysis.ipynb` in Google Colab (badge at the top of the notebook) or Jupyter.
+2. Place `group3.csv` (header row followed by five numeric columns in the order above) in the working directory.
+3. Install the dependencies if needed: `pip install pandas numpy matplotlib scikit-learn`.
+4. Run the cells in order. The timing cell iterates row by row and can take several minutes.
 
 ---
 *Developed by Khaled Walid*
